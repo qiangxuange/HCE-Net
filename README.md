@@ -10,3 +10,7 @@ The MICCAI-Tooth-Segmentation dataset (TOOTH) contains 1998 tooth images, specif
 #
 #
 Instructions: To use our code, you need to prepare within the PyTorch framework. For detailed requirements, please refer to the requirement.txt file. Download the datasets from the aforementioned links, place the training images and labels in the "data/images" and "data/masks" folders respectively, and then run the ktrain.py file to successfully train our model.
+#
+#
+引文格式：
+ Zhu G,Li H, Ren Z, et al. Enhanced Medical Image Segmentation via Dual-Encoder Network with Multi-Scale Attention and Edge Detection. The Visual Computer.
