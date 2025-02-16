@@ -9,5 +9,6 @@
 MICCAI-Tooth-Segmentation数据集（TOOTH）包含1998张牙齿图像，专为在提供的二维全景X射线图像数据上进行牙齿分割任务而设计。可通过MICCAI-Tooth-Segmentation数据集-阿里云天池获取，文件夹T_images中展示了部分数据集。
 #
 #
+指南：
 使用我们的代码，需要在 PyTorch 框架下做的准备：详见 requirement.txt
  下载上述链接中的数据集，将训练图像和标签分别放入 “data/images” 和 “data/masks” 中，然后运行 ktrain.py 即可成功训练我们的模型。
