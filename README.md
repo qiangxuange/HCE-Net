@@ -1,5 +1,5 @@
-# Enhanced Medical Image Segmentation via Dual-Encoder Network with Multi-Scale Attention and Edge Detection
-This is the implementation method of the MSAE-Net network, along with some data related to the research process.
+# Medical Image Segmentation Network Combining Heterogeneous Feature Collaboration and Multi-scale Attention
+This is the implementation method of the HCE-Net network, along with some data related to the research process.
 
 Data:
 The Pulmonary CT Lesion Dataset (PCL) provided by K Scott Mader is available at https://www.kaggle.com/datasets/kmader/finding-lungs-in-ct-data/data. It consists of 267 two-dimensional CT images of lung lesions and their corresponding ground truth images. A portion of the dataset is provided in the folder named L_images.
