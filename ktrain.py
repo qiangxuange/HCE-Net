@@ -8,7 +8,7 @@ from sklearn.model_selection import KFold
 from tqdm import tqdm
 import torch.optim as optim
 from numpy import *
-from Net import MSAE
+from Net import HCE
 from torch.utils.data import DataLoader
 from dataset import GetDataset
 from network.utils import (
@@ -120,7 +120,7 @@ if __name__ == "__main__":
             drop_last = True
         )
         
-        model = MSAE(3, 1).to(device)
+        model = HCE(3, 1).to(device)
         
 
 
