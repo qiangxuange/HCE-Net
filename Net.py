@@ -117,7 +117,7 @@ class encodery(nn.Module):
         out = self.conv3(x1 + x2)
         return out + self.r(x)
         
-class MSAE(nn.Module):#UNet主体
+class HCE(nn.Module):#Net主体
     def __init__(self, in_channels, out_channels, features=[64, 128, 256, 512]):
         super(NBnet, self).__init__()
         #声明list用于上采样和下采样存储
@@ -183,7 +183,7 @@ class MSAE(nn.Module):#UNet主体
 
 if __name__ == '__main__':
     x = torch.randn(4, 3, 256, 256).to(device)
-    model = MSAE(in_channels=3, out_channels=1).to(device)
+    model = HCE(in_channels=3, out_channels=1).to(device)
     #将x传入模型
     preds = model(x)
     print(preds.shape)
