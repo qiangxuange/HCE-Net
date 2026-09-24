@@ -3,14 +3,14 @@ import torch.nn as nn
 
 class iAFF(nn.Module):
     '''
-    多特征融合 iAFF
+    Multi-feature Fusion
     '''
 
     def __init__(self, channels, r=4):
         super(iAFF, self).__init__()
         inter_channels = int(channels // r)
 
-        # 局部注意力
+        # Local Attention
         self.local_att = nn.Sequential(
             nn.Conv2d(channels, inter_channels, kernel_size=1, stride=1, padding=0),
             nn.BatchNorm2d(inter_channels),
@@ -19,7 +19,7 @@ class iAFF(nn.Module):
             nn.BatchNorm2d(channels),
         )
 
-        # 全局注意力
+        # Global Attention
         self.global_att = nn.Sequential(
             nn.AdaptiveAvgPool2d(1),
             nn.Conv2d(channels, inter_channels, kernel_size=1, stride=1, padding=0),
@@ -29,7 +29,7 @@ class iAFF(nn.Module):
             nn.BatchNorm2d(channels),
         )
 
-        # 第二次局部注意力
+        # the second local attention
         self.local_att2 = nn.Sequential(
             nn.Conv2d(channels, inter_channels, kernel_size=1, stride=1, padding=0),
             nn.BatchNorm2d(inter_channels),
@@ -37,7 +37,7 @@ class iAFF(nn.Module):
             nn.Conv2d(inter_channels, channels, kernel_size=1, stride=1, padding=0),
             nn.BatchNorm2d(channels),
         )
-        # 第二次全局注意力
+        # the second global attention
         self.global_att2 = nn.Sequential(
             nn.AdaptiveAvgPool2d(1),
             nn.Conv2d(channels, inter_channels, kernel_size=1, stride=1, padding=0),
