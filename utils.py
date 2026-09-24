@@ -99,7 +99,7 @@ def save_preds_imgs(
             preds = (preds > 0.5).float()
 
         stacked_images = torch.cat((target.unsqueeze(1), preds), dim=2)
-        # 保存拼接后的图片
+        # Save the concatenated image
         torchvision.utils.save_image(stacked_images, f"{folder}/mask_pred_{idx}.png")
 
     model.train()
