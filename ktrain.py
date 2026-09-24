@@ -51,7 +51,7 @@ def Train(loader, model, optimizer, loss_bce, loss_dice, scaler, epoch):
             loss2 = loss_dice(predictions, targets)
             loss = loss1*0.3 + loss2*0.7
 
-        #反向传播
+        #Backpropagation
         optimizer.zero_grad()
         scaler.scale(loss).backward()
         scaler.step(optimizer)
@@ -60,13 +60,13 @@ def Train(loader, model, optimizer, loss_bce, loss_dice, scaler, epoch):
         loop.set_postfix(loss=loss.item())
         epoch_loss += loss.item()
 
-    # 将平均损失添加到losses列表中
+    # Append the average loss to the losses list
     epoch_loss /= len(loader.dataset)
     losses.append(epoch_loss)
 
 
 if __name__ == "__main__":
-    # 数据增强
+    # Data augmentation
     train_transform = alb.Compose(
         [
             alb.Resize(height=image_height, width=image_width),
@@ -81,16 +81,16 @@ if __name__ == "__main__":
             ToTensorV2(),
         ],
     )
-    # 数据加载
+    # Load data
     all_dataset = GetDataset(
         image_dir=train_dir,
         mask_dir=train_mask_dir,
         transform=train_transform,
     )
-    # 设置五折交叉
+    # Set up 5-fold cross-validation
     kfold = KFold(n_splits=5, shuffle=True)
     best_IoU = 0.0
-    #每折的平均值
+    #Average value of each fold
     k_acc = []
     k_dice = []
     k_IoU = []
@@ -107,7 +107,7 @@ if __name__ == "__main__":
             all_dataset,
             batch_size = batch_size,
             num_workers = num_workers,
-            pin_memory = pin_memory,  # 数据是否加载到CUDA固定内存页中
+            pin_memory = pin_memory,  # Whether data is loaded into CUDA pinned memory pages
             sampler = train_subsampler,
             drop_last = True
         )
@@ -128,9 +128,9 @@ if __name__ == "__main__":
         bce_loss = nn.BCEWithLogitsLoss()
         dice_loss = DiceLoss()
         optimizer = optim.Adam(model.parameters(), lr=learning_rate)
-        # 定义余弦退火调度器
+        # Define the cosine annealing scheduler
         scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=100, eta_min=0.0001)
-        #使用混合精度进行训练
+        #Train with mixed precision
         scaler = torch.cuda.amp.GradScaler()
         epoch_list = []
         acc_list = []
@@ -142,11 +142,11 @@ if __name__ == "__main__":
         auc_list = []
         for epoch in range(num_epochs):
             epoch_list.append(epoch)
-            # 训练
+            # Train
             Train(train_loader, model, optimizer, bce_loss, dice_loss, scaler, epoch)
-            # 周期完后更新学习率
+            # Update the learning rate after each epoch
             scheduler.step()
-            # 验证指标结果
+            # Validation metric results
             Acc, Dice, IoU, Precision, Recall, Specificity, AUC = check_accuracy(val_loader, model, device=device)
             acc_list.append(Acc)
             dice_list.append(Dice)
@@ -155,19 +155,19 @@ if __name__ == "__main__":
             recall_list.append(Recall)
             specificity_list.append(Specificity)
             auc_list.append(AUC)
-            # 保存最优模型
+            # **Save the best model**
             if IoU > best_IoU:
                 best_IoU = IoU
-                # 保存验证图片
+                # Save validation images
                 save_preds_imgs(
                     val_loader, model, folder="saved_images/", device=device
                 )
                 print(f"Found better model! Saving to weight_point.pth with IoU Index: {best_IoU}")
-        print(f"\n<<<-------------------第{fold}折结束----------------->>>")
+        print(f"\n<<<-------------------End of fold x----------------->>>")
         print(f"Mean Accuracy:{mean(acc_list)}")
         print(f"Mean IoU:{mean(IoU_list)}")
         print(f"Mean Dice:{mean(dice_list)}\n")
-        # 记录每一折的均值
+        # Record the mean of each fold
         k_acc.append(mean(acc_list))
         k_IoU.append(mean(IoU_list))
         k_dice.append(mean(dice_list))
