@@ -29,7 +29,7 @@ class encoderx(nn.Module):  # convolution class
             nn.ReLU(inplace=True)
         )
         self.r = nn.Conv2d(in_channels, out_channels, 1)
-    #网络推进
+    #Network forward propagation
     def forward(self, x):
         x = self.conv(x) + self.r(x)  # Residual
         return x
@@ -125,11 +125,11 @@ class HCE(nn.Module):#Main body of Net
         self.downs1 = nn.ModuleList()
         self.downs2 = nn.ModuleList()
         self.iaff = nn.ModuleList()
-        #池化层
+        #Pooling layer
         self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
 
         for feature in features:
-            #下采样
+            #Downsample
             self.downs1.append(encoderx(in_channels, feature))  # The first encoder
             self.downs2.append(encodery(in_channels, feature))  # The second encoder
             in_channels = feature
