@@ -175,36 +175,36 @@ if __name__ == "__main__":
         k_recall.append(mean(recall_list))
         k_specificity.append(mean(specificity_list))
         k_auc.append(mean(auc_list))
-        # 只写入一个kfols的数据（100个）
+        # Write only the data of a single kfols（100个）
         if write:
             df = pd.read_excel(path)
             if len(IoU_list) != len(df):
-                print("新数据的长度与DataFrame的行数不匹配！")
+                print("The length of the new data does not match the number of rows in DataFrame！")
             else:
-                # 将新数据添加到DataFrame中作为新列
+                #Add the new data to DataFrame as a new column 
                 df['MA'] = IoU_list
                 df['MAloss'] = losses
-                # 保存修改后的DataFrame到Excel文件
+                # Save the modified DataFrame to an Excel file
                 df.to_excel(path, index=False)
-                print("新的数据列已添加到Excel文件中。")
+                print("A new data column has been added to the Excel file.")
             write = False
-        # 只做一个kfold的图
+        # Plot only one k-fold figure
         if flage:
-            # 绘制IoU Index
+            # Plot the IoU Index
             plt.figure()
             plt.plot(epoch_list, IoU_list, label='IoU Index')
             plt.title("IoU Index over Epochs")
             plt.xlabel("Epochs")
             plt.ylabel("Index Value")
-            # 添加图例
+            # Add a legend
             plt.legend()
             plt.grid(True)
-            # 调整布局
+            # Adjust the layout
             plt.tight_layout()
             plt.savefig("IoU_Index.png")
             plt.close()
 
-            # 绘制loss图
+            # Plot the loss figure
             plt.figure()
             plt.plot(epoch_list, losses, label='loss')
             plt.title("Training Loss")
@@ -216,15 +216,15 @@ if __name__ == "__main__":
             plt.savefig("Loss.png")
             plt.close()
             flage = False
-    # 打印五折交叉验证最终结果
+    # Print the final results of 5-fold cross-validation
     res = [mean(k_acc), mean(k_dice), mean(k_IoU), mean(k_precision), mean(k_recall), mean(k_specificity), mean(k_auc)]
     dff = pd.read_excel(std_path)
     if len(dff) != len(res):
-        print("新数据的长度与DataFrame的行数不匹配！")
+        print("The length of the new data does not match the number of rows in the DataFrame！")
     else:
         dff['MA'] = res
         dff.to_excel(std_path, index=False)
-    print("\n训练完成！！！输出最终结果--------->")
+    print("\nTraining complete!!! Output the final results--------->")
     print(f"Mean Acc：{mean(k_acc)}")
     print(f"Mean Dice: {mean(k_dice)}")
     print(f"Mean IoU: {mean(k_IoU)}")
