@@ -8,9 +8,9 @@ from DCT import DHN
 from IAFF import iAFF
 
 
-class encoderx(nn.Module):  # 卷积类
-    def __init__(self, in_channels, out_channels):  # 固定方法
-        super(encoderx, self).__init__()  # 继承DoubleConv类
+class encoderx(nn.Module):  # convolution class
+    def __init__(self, in_channels, out_channels):  # fixed method
+        super(encoderx, self).__init__()  # inherits DoubleConv
         self.conv = nn.Sequential(
             nn.Conv2d(in_channels, out_channels, 3, 1, 1, bias=False),
             nn.BatchNorm2d(out_channels),
