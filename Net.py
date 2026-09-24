@@ -31,7 +31,7 @@ class encoderx(nn.Module):  # convolution class
         self.r = nn.Conv2d(in_channels, out_channels, 1)
     #网络推进
     def forward(self, x):
-        x = self.conv(x) + self.r(x)  # 残差
+        x = self.conv(x) + self.r(x)  # Residual
         return x
 
 
@@ -53,11 +53,11 @@ class encoder(nn.Module):
         return x
 
 def sobel_func(x, device):
-    # 定义Sobel算子
+    # Define the Sobel operator
     sobel_x = np.array([[-1, 0, 1],
                         [-2, 0, 2],
                         [-1, 0, 1]], dtype=np.float32)
-    # 定义Sobel算子
+    # Define the Sobel operator
     sobel_y = np.array([[-1, -2, -1],
                         [0, 0, 0],
                         [1, 2, 1]], dtype=np.float32)
@@ -117,10 +117,10 @@ class encodery(nn.Module):
         out = self.conv3(x1 + x2)
         return out + self.r(x)
         
-class HCE(nn.Module):#Net主体
+class HCE(nn.Module):#Main body of Net
     def __init__(self, in_channels, out_channels, features=[64, 128, 256, 512]):
         super(NBnet, self).__init__()
-        #声明list用于上采样和下采样存储
+        #Declare list to store upsampling and downsampling results
         self.ups = nn.ModuleList()
         self.downs1 = nn.ModuleList()
         self.downs2 = nn.ModuleList()
@@ -130,16 +130,16 @@ class HCE(nn.Module):#Net主体
 
         for feature in features:
             #下采样
-            self.downs1.append(encoderx(in_channels, feature))  # 第一条编码器
-            self.downs2.append(encodery(in_channels, feature))  # 第二条编码器
+            self.downs1.append(encoderx(in_channels, feature))  # The first encoder
+            self.downs2.append(encodery(in_channels, feature))  # The second encoder
             in_channels = feature
 
         for feature in reversed(features):
-            #上采样--包括一个卷积和一个转置卷积
+            #Upsampling — including one convolution and one transposed convolution
             self.ups.append(nn.ConvTranspose2d(feature * 2, feature, kernel_size=2, stride=2))
             self.ups.append(encoderx(feature * 2, feature))
             self.iaff.append(iAFF(feature))
-        #unet网络底层卷积
+        #Convolution at the bottom of the network
         self.bottleneck = encoder(features[-1], features[-1] * 2)
         self.final_conv = nn.Conv2d(features[0], out_channels, kernel_size=1)
         self.convv = nn.Conv2d(1024, 512, kernel_size=1)
@@ -150,41 +150,41 @@ class HCE(nn.Module):#Net主体
         skip_connections1, skip_connections2 = [], []
 
         for down in range(0, len(self.downs1)):
-            #对x进行下采样
+            #Perform downsampling on x
             x1 = self.downs1[down](x1)
             x2 = self.downs2[down](x2)
-            #将此处状态加入跳跃连接list
+            #Append the current state to the skip connection list
             x1 = x1 + x2
             x2 = x1 + x2
             skip_connections1.append(x1)
             skip_connections2.append(x2)
-            #进行池化操作
+            #Perform pooling operation
             x1 = self.pool(x1)
             x2 = self.pool(x2)
 
         x = self.bottleneck(self.convv(torch.cat([x1, x2], dim = 1)))
-        #因为上采样是自下而上，所以反转当前列表
+        #Reverse the current list because upsampling proceeds from bottom to top
         skip_connections1 = skip_connections1[::-1]
         skip_connections2 = skip_connections2[::-1]
         temp_x = x
         for i in range(0, len(self.ups), 2):
-            #先进行转置卷积
+            #Perform transposed convolution first
             x = self.ups[i](x)
             encoder1 = skip_connections1[i // 2]
             encoder2 = skip_connections2[i // 2]
             combined = self.iaff[i // 2](encoder1, encoder2)
             concat_skip = torch.cat([combined, x], dim=1)
-            #粘贴后的两个特征在进行一次卷积操作
+            #Perform another convolution operation on the two concatenated features
             x = self.ups[i + 1](concat_skip) + self.ups[i](temp_x)
             temp_x = x
 
-        return self.final_conv(x)  # 最后的1*1卷积操作
+        return self.final_conv(x)  # The final 1×1 convolution operation
 
 
 if __name__ == '__main__':
     x = torch.randn(4, 3, 256, 256).to(device)
     model = HCE(in_channels=3, out_channels=1).to(device)
-    #将x传入模型
+    #Pass x into the model
     preds = model(x)
     print(preds.shape)
 
