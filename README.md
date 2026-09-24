@@ -6,7 +6,7 @@ The Pulmonary CT Lesion Dataset (PCL) provided by K Scott Mader is available at 
 #
 The Digital Retinal Images for Vessel Extraction (DRIVE) dataset can be accessed at https://drive.grand-challenge.org/. It is specifically designed for retinal vessel segmentation and holds significant importance in the field of medical image processing. A sample of this dataset is showcased in the eye_images folder.
 #
-The MICCAI-Tooth-Segmentation dataset (TOOTH) contains 1998 tooth images, specifically designed for tooth segmentation tasks on the provided two-dimensional panoramic X-ray image data. It can be obtained through the https://tianchi.aliyun.com/dataset/156596(https://tianchi.aliyun.com/dataset/156596.) dataset on Alibaba Cloud Tianchi. A portion of the dataset is displayed in the folder named T_images.
+The MICCAI-Tooth-Segmentation dataset (TOOTH) contains 1998 tooth images, specifically designed for tooth segmentation tasks on the provided two-dimensional panoramic X-ray image data. It can be obtained through the https://tianchi.aliyun.com/dataset/156596 dataset on Alibaba Cloud Tianchi. A portion of the dataset is displayed in the folder named T_images.
 #
 #
 Data and Image Authorization Statement:
